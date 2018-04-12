@@ -33,6 +33,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Page<Employee> findAll(Pageable pageable);
 
     //5.查找**的所在的公司的公司名称
+    @Query("select b.companyName from Employee a, Company b where a.companyId = b.id and a.name = ?1")
+    String findCompanyNameByEmployeeName(String name);
 
     //6.将*的名字改成*,输出这次修改影响的行数
 
