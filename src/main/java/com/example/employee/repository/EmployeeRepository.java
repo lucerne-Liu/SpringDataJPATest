@@ -4,6 +4,7 @@ import com.example.employee.entity.Employee;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
@@ -23,7 +24,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     Employee findFirstByNameContainingAndSalaryGreaterThan(String nameContains,Integer salary);
     //方法二：测试自定义SQL查询
     @Query(value = "select * from employee t where t.name like %?1% and t.salary > ?2 limit 1", nativeQuery = true)
-    Employee findUserByNameCharacterandSalary(String nameContains,Integer salary);
+    Employee findUserByNameCharacterAndSalary(String nameContains,Integer salary);
 
     //3.找出一个薪资最高且公司ID是*的雇员以及该雇员的姓名
     @Query(value = "SELECT * FROM employee t WHERE t.companyId =:companyId ORDER BY salary DESC limit 1", nativeQuery = true)
@@ -37,6 +38,8 @@ public interface EmployeeRepository extends JpaRepository<Employee, Long> {
     String findCompanyNameByEmployeeName(String name);
 
     //6.将*的名字改成*,输出这次修改影响的行数
-
+    @Modifying
+    @Query("update Employee u set u.name = ?1 where u.name = ?2")
+    int modifyByIName(String newName, String name);
     //7.删除姓名是*的employee
 }
